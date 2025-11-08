@@ -1,12 +1,104 @@
 # RL-PVES
 
-# RUN
-gymnasium==1.0.0
-numpy==1.26.4
-torch==2.5.1
-matplotlib==3.10.0
-pandas==2.2.3
-pandapower==2.14.11
-simbench==1.5.3
-scipy==1.13.1
-numba==0.58.1
+## Project Overview
+
+RL-PVES is a Deep Reinforcement Learning (DRL)-based optimization project tailored for power systems. It aims to solve key challenges in power grid management, such as minimizing power loss, optimizing power flow, and ensuring grid stability. The project integrates state-of-the-art DRL algorithms with power system constraints, providing tools for experiment execution, hyperparameter tuning, and result visualization.
+
+## Environmental DependenciesInstall required libraries using requirements.txt:
+
+gymnasium==1.0.0          # Reinforcement learning environment
+
+numpy==1.26.4             # Numerical computing
+
+torch==2.5.1              # Deep learning framework
+
+matplotlib==3.10.0        # Plotting
+
+pandas==2.2.3             # Data processing
+
+pandapower==2.14.11       # Power system simulation
+
+simbench==1.5.3           # Power system benchmarks
+
+scipy==1.13.1             # Scientific computing
+
+numba==0.58.1             # Numerical acceleration
+
+# Installation command:
+
+pip install -r requirements.txt
+
+## Project Structure
+
+RL-PVES/
+
+├── drl/                      # Core DRL module
+
+│   ├── util/                 # Utility functions
+
+│   │   ├── evaluation.py     # Experiment evaluation & logging
+
+│   │   ├── plot_returns.py   # Training curve visualization
+
+│   │   └── seeding.py        # Random seed management
+
+│   ├── shared_code/          # Shared components
+
+│   │   └── memory.py         # Experience replay buffers (prioritized & standard)
+
+│   ├── hp_tuning/            # Hyperparameter tuning
+
+│   │   └── evaluate_hps.py   # HP impact analysis & visualization
+
+│   ├── unpublished/          # Experimental algorithms
+
+│   │   ├── targetless.py     # Target-network free TD3/SAC variants
+
+│   │   └── ddpg1step.py      # One-step update DDPG variant
+
+│   └── reinforce.py          # REINFORCE algorithm implementation
+
+├── constraints.py            # Power system constraint definitions
+
+├── experiment.py             # Main experiment runner & visualization
+
+└── requirements.txt          # Dependencies list
+
+## Core Features
+### 1. DRL Algorithm Suite
+REINFORCE: Basic policy gradient algorithm for discrete action spaces (drl/reinforce.py).
+Advanced Variants: Experimental implementations of targetless TD3/SAC and one-step DDPG for performance comparison.
+Replay Buffers: Multiple buffer types (standard, prioritized, multi-agent) to support diverse DRL architectures.
+### 2. Experiment Workflow
+Evaluation: Track training metrics (returns, steps, constraints) with sliding averages and real-time logging (evaluation.py).
+Visualization: Generate training curves with configurable rolling windows, mean/std displays, and step range filtering (plot_returns.py).
+Reproducibility: Seed management tools ensure consistent experiment results.
+### 3. Hyperparameter Tuning
+Automated hyperparameter evaluation with evaluate_hps.py.
+Supports discrete/continuous hyperparameters and optimal value selection.
+Generates box plots and statistical analysis for hyperparameter impact.
+### 4. Power System Constraints
+Implements critical grid constraints (voltage limits, line/transformer loading rates) using pandapower.
+Ensures optimization adheres to physical power system rules.
+## Usage Examples
+### 1. Run ExperimentsExecute power system optimization tasks:
+bash
+python experiment.py
+Example code snippet from experiment.py:
+python
+运行
+# Render power network state
+def render(self, **kwargs):
+    ax = pp.plotting.simple_plot(self.net,** kwargs)
+    return ax
+### 2. Hyperparameter Evaluation
+bash
+python drl/hp_tuning/evaluate_hps.py --directory 20240506_test_hp_tuning4 --which_hyperparam actor_fc_dims --metric average_return
+### 3. Visualize Training Results
+bash
+python drl/util/plot_returns.py --directory data/ --rolling-window 3 --mean --std
+## Notes
+Experimental algorithms (targetless.py, ddpg1step.py) are under development.
+Power system simulations require valid pandapower/simbench network data.
+Training generates test_returns.csv for offline analysis.
+Detailed comments and modular design facilitate extension.
